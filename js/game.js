@@ -77,35 +77,35 @@ y : 2,
 score : 0
 };
 var upper1 = {
-	xspeed : -30,
+	xspeed : -60,
 	x : 990,
 	y : 150
 }
 var upper2 = {
-	xspeed : -30,
+	xspeed : -60,
 	x : 1045,
 	y : 100
 }
 var upper3 = {
-	xspeed : -30,
+	xspeed : -60,
 	x : 1100,
 	y : 75
 }
 
 var lower1 = {
-	xspeed : -30,
+	xspeed : -60,
 	x : 990,
-	y : 350
+	y : 700
 }
 var lower2 = {
-	xspeed : -30,
+	xspeed : -60,
 	x : 1045,
-	y : 250
+	y : 500
 }
 var lower3 = {
-	xspeed : -30,
+	xspeed : -60,
 	x : 1100,
-	y : 210
+	y : 500
 }
 var keysDown = {};
 //adding key listeners
@@ -123,7 +123,7 @@ var reset = function () {
 	bird.xspeed=0;
 	bird.yspeed=0;
 	bird.x=0;
-	bird.y=300;
+	bird.y=250;
 	bird.score=0;
 };
 var f=0;
