@@ -1,7 +1,7 @@
 var canvas = document.createElement("canvas");
 var ctx = canvas.getContext("2d");
-canvas.width = 1420;
-canvas.height = 800;
+canvas.width = 1120;
+canvas.height = 500;
 document.body.appendChild(canvas);
 //bg image
 var bgReady = false;
@@ -78,34 +78,34 @@ score : 0
 };
 var upper1 = {
 	xspeed : -30,
-	x : 20,
-	y : -100
+	x : 990,
+	y : 150
 }
 var upper2 = {
 	xspeed : -30,
-	x : 75,
-	y : -50
+	x : 1045,
+	y : 100
 }
 var upper3 = {
 	xspeed : -30,
-	x : 130,
-	y : -70
+	x : 1100,
+	y : 75
 }
 
 var lower1 = {
 	xspeed : -30,
-	x : 20,
-	y : 150
+	x : 990,
+	y : 350
 }
 var lower2 = {
 	xspeed : -30,
-	x : 75,
-	y : 135
+	x : 1045,
+	y : 250
 }
 var lower3 = {
 	xspeed : -30,
-	x : 130,
-	y : 160
+	x : 1100,
+	y : 210
 }
 var keysDown = {};
 //adding key listeners
@@ -123,7 +123,7 @@ var reset = function () {
 	bird.xspeed=0;
 	bird.yspeed=0;
 	bird.x=0;
-	bird.y=120;
+	bird.y=300;
 	bird.score=0;
 };
 var f=0;
@@ -149,36 +149,36 @@ var update = function (modifier)
 	lower3.x=lower3.x + lower3.xspeed * modifier;
 	if (upper1.x<-25)
 	{
-		upper1.y=difficulty+10-Math.random()*50;
-		upper1.x=1420
+		upper1.y=difficulty+250-Math.random()*75;
+		upper1.x=1120
 	}
 	if (upper2.x<-25)
 	{
-		upper2.x=1420
-		upper2.y=difficulty+10-Math.random()*50;
+		upper2.x=1120
+		upper2.y=difficulty+250-Math.random()*50;
 	}
 	if (upper3.x<-25)
 	{
-		upper3.x=1420
-		upper3.y=difficulty+10-Math.random()*50;	
+		upper3.x=1120
+		upper3.y=difficulty+250-Math.random()*50;	
 	}	
 	if (lower1.x<-25)
 	{
-		lower1.y=-difficulty+704-Math.random()*50;
-		lower1.x=1420
+		lower1.y=-difficulty+400-Math.random()*50;
+		lower1.x=1120
 	}
 	if (lower2.x<-25)
 	{
-		lower2.x=1420
-		lower2.y=-difficulty+704-Math.random()*50;
+		lower2.x=1120
+		lower2.y=-difficulty+400-Math.random()*50;
 	}
 	if (lower3.x<-25)
 	{
-		lower3.x=1420
-		lower3.y=-difficulty+704-Math.random()*50;	
+		lower3.x=1120
+		lower3.y=-difficulty+400-Math.random()*50;	
 	}	
 	//collision detection
-	if (bird.y>800)
+	if (bird.y>500)
 		reset();
 	if (upper1.x<15 && bird.y<upper1.y+135)
 		reset();
