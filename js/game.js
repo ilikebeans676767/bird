@@ -32,7 +32,7 @@ var bird = {
 	xacc: 0,
 	yacc: 200,
 	x: 2,
-	y: -100,
+	y: 2,
 	score: 0
 };
 
@@ -112,7 +112,7 @@ var reset = function () {
 	bird.xspeed = 0;
 	bird.yspeed = 0;
 	bird.x = 0;
-	bird.y = 120;
+	bird.y = 55;
 	bird.score = 0;
 	pipeSpeed = INITIAL_PIPE_SPEED;
 	pipesPassed = 0;
