@@ -114,7 +114,7 @@ var reset = function () {
 	bird.x = 0;
 	bird.y = 120;
 	bird.score = 0;
-	pipeSpeed = ;
+	pipeSpeed = INITIAL_PIPE_SPEED;
 	pipesPassed = 0;
 	initPipes();
 };
