@@ -40,7 +40,7 @@ var PIPE_COUNT = 6; // Start with 6 pipes for higher difficulty
 var PIPE_GAP = 90;
 var PIPE_WIDTH = 25, PIPE_HEIGHT = 135; // Original pipe dimensions
 var PIPE_SPAWN_DISTANCE = Math.floor(canvas.width / PIPE_COUNT);
-var INITIAL_PIPE_SPEED = -30;
+var INITIAL_PIPE_SPEED = -60;
 var pipeSpeed = INITIAL_PIPE_SPEED;
 var pipesPassed = 0;
 
@@ -165,7 +165,7 @@ var update = function (modifier)
 			uppers[i].counted = true;
 			// Every 6 pipes passed, increase speed
 			if (pipesPassed % 6 === 0) {
-				pipeSpeed -= 5; // Increase speed by 5 (more negative is faster)
+				pipeSpeed -= 12; // Increase speed by 5 (more negative is faster)
 			}
 		}
 	}
