@@ -1,6 +1,6 @@
 var canvas = document.createElement("canvas");
 var ctx = canvas.getContext("2d");
-canvas.width = 576; // 144 * 4
+canvas.width = 576;
 canvas.height = 256;
 document.body.appendChild(canvas);
 
@@ -26,6 +26,7 @@ lowerPipeImage.onload = function () { lowerPipeReady = true; };
 lowerPipeImage.src = "images/lower.png";
 
 // Bird
+var BIRD_WIDTH = 34, BIRD_HEIGHT = 24; // Adjust to your image size
 var bird = {
     xspeed: 0,
     yspeed: 0,
@@ -38,23 +39,38 @@ var bird = {
 
 // Pipe variables
 var PIPE_COUNT = 6;
-var PIPE_GAP = 90;      // smaller gap (was 135)
-var PIPE_SPEED = -60;   // faster pipes (was -30)
-var PIPE_WIDTH = 25;    // approximate width of a pipe image
+var PIPE_GAP = 90;
+var PIPE_SPEED = -60;
+var PIPE_WIDTH = 25;
+var PIPE_HEIGHT = 100; // Adjust to your image size
 var PIPE_SPAWN_DISTANCE = Math.floor(canvas.width / PIPE_COUNT);
 
 // Arrays for pipes
 var uppers = [];
 var lowers = [];
 
-// Initialize pipes, spread them evenly
-for (let i = 0; i < PIPE_COUNT; i++) {
-    let xPos = 80 + i * PIPE_SPAWN_DISTANCE;
-    let upperY = -100 + Math.random() * 60;
-    let lowerY = upperY + PIPE_GAP + 100; // 100 is the height of the pipe image
-    uppers.push({ xspeed: PIPE_SPEED, x: xPos, y: upperY });
-    lowers.push({ xspeed: PIPE_SPEED, x: xPos, y: lowerY });
+// Game state
+var gameOver = false;
+var tryAgainButton = {
+    x: canvas.width / 2 - 50,
+    y: canvas.height / 2 + 20,
+    width: 100,
+    height: 30
+};
+
+function initPipes() {
+    uppers = [];
+    lowers = [];
+    for (let i = 0; i < PIPE_COUNT; i++) {
+        let xPos = 80 + i * PIPE_SPAWN_DISTANCE;
+        let upperY = -100 + Math.random() * 60;
+        let lowerY = upperY + PIPE_GAP + PIPE_HEIGHT;
+        uppers.push({ xspeed: PIPE_SPEED, x: xPos, y: upperY });
+        lowers.push({ xspeed: PIPE_SPEED, x: xPos, y: lowerY });
+    }
 }
+
+initPipes();
 
 var keysDown = {};
 addEventListener("keydown", function (e) {
@@ -65,6 +81,24 @@ addEventListener("keyup", function (e) {
     f = 0;
 }, false);
 
+// Listen for mouse clicks for "Try Again" button
+canvas.addEventListener("click", function (evt) {
+    if (gameOver) {
+        var rect = canvas.getBoundingClientRect();
+        var mouseX = evt.clientX - rect.left;
+        var mouseY = evt.clientY - rect.top;
+        if (
+            mouseX >= tryAgainButton.x && mouseX <= tryAgainButton.x + tryAgainButton.width &&
+            mouseY >= tryAgainButton.y && mouseY <= tryAgainButton.y + tryAgainButton.height
+        ) {
+            reset();
+            gameOver = false;
+            then = Date.now();
+            main();
+        }
+    }
+}, false);
+
 //function to reset game
 var reset = function () {
     bird.xspeed = 0;
@@ -72,13 +106,7 @@ var reset = function () {
     bird.x = 0;
     bird.y = 120;
     bird.score = 0;
-    for (let i = 0; i < PIPE_COUNT; i++) {
-        let xPos = 80 + i * PIPE_SPAWN_DISTANCE;
-        let upperY = -100 + Math.random() * 60;
-        let lowerY = upperY + PIPE_GAP + 100;
-        uppers[i].x = xPos; uppers[i].y = upperY;
-        lowers[i].x = xPos; lowers[i].y = lowerY;
-    }
+    initPipes();
 };
 var f = 0;
 var difficulty = -40;
@@ -86,7 +114,7 @@ var difficulty = -40;
 var update = function (modifier) {
     bird.score += modifier;
     if (38 in keysDown && f == 0) { // Player holding up
-        bird.yspeed = -100;
+        bird.yspeed = -70; // LESS BIG JUMP!
         f = 1;
     }
     bird.x += bird.xspeed * modifier;
@@ -94,7 +122,6 @@ var update = function (modifier) {
     bird.xspeed += bird.xacc * modifier;
     bird.yspeed += bird.yacc * modifier;
 
-    // Move pipes and respawn if off screen
     for (let i = 0; i < PIPE_COUNT; i++) {
         uppers[i].x += uppers[i].xspeed * modifier;
         lowers[i].x += lowers[i].xspeed * modifier;
@@ -102,43 +129,63 @@ var update = function (modifier) {
             let newUpperY = difficulty + 10 - Math.random() * 50;
             uppers[i].y = newUpperY;
             uppers[i].x = canvas.width;
-            lowers[i].y = newUpperY + PIPE_GAP + 100;
+            lowers[i].y = newUpperY + PIPE_GAP + PIPE_HEIGHT;
             lowers[i].x = canvas.width;
         }
     }
 
-    // collision detection
-    if (bird.y > canvas.height) reset();
+    // collision detection (rectangle-based, more accurate)
     for (let i = 0; i < PIPE_COUNT; i++) {
         // Upper pipe collision
         if (
-            uppers[i].x < bird.x + 15 && uppers[i].x + PIPE_WIDTH > bird.x && bird.y < uppers[i].y + 90
+            bird.x < uppers[i].x + PIPE_WIDTH &&
+            bird.x + BIRD_WIDTH > uppers[i].x &&
+            bird.y < uppers[i].y + PIPE_HEIGHT &&
+            bird.y + BIRD_HEIGHT > uppers[i].y
         ) {
-            reset();
+            endGame();
+            return;
         }
         // Lower pipe collision
         if (
-            lowers[i].x < bird.x + 15 && lowers[i].x + PIPE_WIDTH > bird.x && bird.y > lowers[i].y - 10
+            bird.x < lowers[i].x + PIPE_WIDTH &&
+            bird.x + BIRD_WIDTH > lowers[i].x &&
+            bird.y < lowers[i].y + PIPE_HEIGHT &&
+            bird.y + BIRD_HEIGHT > lowers[i].y
         ) {
-            reset();
+            endGame();
+            return;
         }
     }
+    // ground
+    if (bird.y > canvas.height - BIRD_HEIGHT || bird.y < 0) {
+        endGame();
+        return;
+    }
 };
+
+function endGame() {
+    gameOver = true;
+    render(); // Draw the final state
+    drawGameOver();
+}
 
 //function to render on the screen
 var render = function () {
     if (bgReady) {
         ctx.drawImage(bgImage, 0, 0);
+    } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
     if (birdReady) {
-        ctx.drawImage(birdImage, bird.x, bird.y);
+        ctx.drawImage(birdImage, bird.x, bird.y, BIRD_WIDTH, BIRD_HEIGHT);
     }
     for (let i = 0; i < PIPE_COUNT; i++) {
         if (upperPipeReady) {
-            ctx.drawImage(upperPipeImage, uppers[i].x, uppers[i].y);
+            ctx.drawImage(upperPipeImage, uppers[i].x, uppers[i].y, PIPE_WIDTH, PIPE_HEIGHT);
         }
         if (lowerPipeReady) {
-            ctx.drawImage(lowerPipeImage, lowers[i].x, lowers[i].y);
+            ctx.drawImage(lowerPipeImage, lowers[i].x, lowers[i].y, PIPE_WIDTH, PIPE_HEIGHT);
         }
     }
     // Score
@@ -146,18 +193,43 @@ var render = function () {
     ctx.font = "24px Helvetica";
     ctx.textAlign = "left";
     ctx.textBaseline = "top";
-    ctx.fillText("score: " + bird.score, 12, 32);
+    ctx.fillText("score: " + Math.floor(bird.score), 12, 32);
+
+    if (gameOver) {
+        drawGameOver();
+    }
 };
 
+function drawGameOver() {
+    ctx.save();
+    ctx.globalAlpha = 0.7;
+    ctx.fillStyle = "#000";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.globalAlpha = 1.0;
+    ctx.fillStyle = "#fff";
+    ctx.font = "bold 40px Helvetica";
+    ctx.textAlign = "center";
+    ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2 - 20);
+
+    // Draw Try Again button
+    ctx.fillStyle = "#00aaff";
+    ctx.fillRect(tryAgainButton.x, tryAgainButton.y, tryAgainButton.width, tryAgainButton.height);
+    ctx.fillStyle = "#fff";
+    ctx.font = "20px Helvetica";
+    ctx.fillText("Try Again", canvas.width / 2, tryAgainButton.y + 22);
+    ctx.restore();
+}
+
 // the main loop of the game
-var main = function () {
+var then = Date.now();
+function main() {
+    if (gameOver) return;
     var now = Date.now();
     var delta = now - then;
     update(delta / 1000);
     render();
     then = now;
     requestAnimationFrame(main);
-};
-var then = Date.now();
+}
 reset();
 main();
