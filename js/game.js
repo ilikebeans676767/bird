@@ -40,7 +40,7 @@ var PIPE_COUNT = 6; // Start with 6 pipes for higher difficulty
 var PIPE_GAP = 90;
 var PIPE_WIDTH = 25, PIPE_HEIGHT = 135; // Original pipe dimensions
 var PIPE_SPAWN_DISTANCE = Math.floor(canvas.width / PIPE_COUNT);
-var INITIAL_PIPE_SPEED = -90;
+var INITIAL_PIPE_SPEED = -105;
 var pipeSpeed = INITIAL_PIPE_SPEED;
 var pipesPassed = 0;
 
