@@ -33,7 +33,7 @@ var bird = {
 	yacc: 200,
 	x: 2,
 	y: 2,
-	score: 0
+	Score: 0
 };
 
 var PIPE_COUNT = 6; // More for better dificulty
@@ -219,8 +219,8 @@ var render = function () {
 	ctx.fillStyle = "rgb(250, 250, 250)";
 	ctx.font = "24px Helvetica";
 	ctx.textAlign = "left";
-	ctx.textBaseline = "top";
-	ctx.fillText("score: " + Math.floor(bird.score), 12, 32);
+	ctx.textBaseline = "bottom";
+	ctx.fillText("Score: " + Math.floor(bird.score), 12, 32);
 
 	if (gameOver) {
 		drawGameOver();
