@@ -40,7 +40,7 @@ var PIPE_COUNT = 6; // Start with 6 pipes for higher difficulty
 var PIPE_GAP = 90;
 var PIPE_WIDTH = 25, PIPE_HEIGHT = 135; // Original pipe dimensions
 var PIPE_SPAWN_DISTANCE = Math.floor(canvas.width / PIPE_COUNT);
-var INITIAL_PIPE_SPEED = -48;
+var INITIAL_PIPE_SPEED = -75;
 var pipeSpeed = INITIAL_PIPE_SPEED;
 var pipesPassed = 0;
 
@@ -139,7 +139,7 @@ var update = function (modifier)
 
 	bird.score += modifier;
 	if (38 in keysDown && f == 0) { // Player holding up
-		bird.yspeed = -70; // less big jump
+		bird.yspeed = -95; // less big jump
 		f = 1;
 	}
 	bird.x += bird.xspeed * modifier;
