@@ -32,15 +32,15 @@ var bird = {
 	xacc: 0,
 	yacc: 200,
 	x: 2,
-	y: -40,
+	y: -100,
 	score: 0
 };
 
-var PIPE_COUNT = 7; // Start with 6 pipes for higher difficulty
+var PIPE_COUNT = 6; // More for better dificulty
 var PIPE_GAP = 60;
 var PIPE_WIDTH = 25, PIPE_HEIGHT = 135; // Original pipe dimensions
 var PIPE_SPAWN_DISTANCE = Math.floor(canvas.width / PIPE_COUNT);
-var INITIAL_PIPE_SPEED = -105;
+var INITIAL_PIPE_SPEED = -105; // Speed
 var pipeSpeed = INITIAL_PIPE_SPEED;
 var pipesPassed = 0;
 
@@ -65,7 +65,7 @@ function randomUpperY() {
 function initPipes() {
 	uppers = [];
 	lowers = [];
-	// Spread pipes evenly across the canvas
+	// Spread pipes evenly
 	for (let i = 0; i < PIPE_COUNT; i++) {
 		let xPos = 80 + i * PIPE_SPAWN_DISTANCE;
 		let upperY = randomUpperY();
@@ -87,7 +87,7 @@ addEventListener("keyup", function (e) {
 	f = 0;
 }, false);
 
-// Listen for mouse clicks for "Try Again" button
+// Try again
 canvas.addEventListener("click", function (evt) {
 	if (gameOver) {
 		var rect = canvas.getBoundingClientRect();
@@ -122,7 +122,7 @@ var reset = function () {
 var f = 0;
 var difficulty = -40;
 
-// collision helper: axis-aligned bounding box
+// collision helper
 function rectsCollide(rx, ry, rw, rh, sx, sy, sw, sh) {
 	return (
 		rx < sx + sw &&
@@ -159,7 +159,7 @@ var update = function (modifier)
 			lowers[i].x = canvas.width;
 		}
 
-		// Only count once per pipe set, when it passes the bird
+		// This does not work :(
 		if (!uppers[i].counted && uppers[i].x + PIPE_WIDTH < bird.x) {
 			pipesPassed++;
 			uppers[i].counted = true;
@@ -170,7 +170,7 @@ var update = function (modifier)
 		}
 	}
 
-	// Improved collision detection using bounding boxes (bird: 16x16 for your sprite, pipes: 25x135 as before)
+	// Birdo colision
 	const bw = 16, bh = 16, pw = PIPE_WIDTH, ph = PIPE_HEIGHT;
 	for (let i = 0; i < PIPE_COUNT; ++i) {
 		// Upper pipes
