@@ -32,11 +32,11 @@ var bird = {
 	xacc: 0,
 	yacc: 200,
 	x: 2,
-	y: 2,
+	y: -40,
 	score: 0
 };
 
-var PIPE_COUNT = 6; // Start with 6 pipes for higher difficulty
+var PIPE_COUNT = 7; // Start with 6 pipes for higher difficulty
 var PIPE_GAP = 60;
 var PIPE_WIDTH = 25, PIPE_HEIGHT = 135; // Original pipe dimensions
 var PIPE_SPAWN_DISTANCE = Math.floor(canvas.width / PIPE_COUNT);
