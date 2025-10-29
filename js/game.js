@@ -165,7 +165,7 @@ var update = function (modifier)
 			uppers[i].counted = true;
 			// Every 6 pipes passed, increase speed
 			if (pipesPassed % 4 === 0) {
-				pipeSpeed = -60; // Increase speed by 5 (more negative is faster)
+				pipeSpeed -= 60; // Increase speed by 5 (more negative is faster)
 			}
 		}
 	}
