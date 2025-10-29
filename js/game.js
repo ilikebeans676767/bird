@@ -139,7 +139,7 @@ var update = function (modifier)
 
 	bird.score += modifier;
 	if (38 in keysDown && f == 0) { // Player holding up
-		bird.yspeed = -80; // less big jump
+		bird.yspeed = -85; // less big jump
 		f = 1;
 	}
 	bird.x += bird.xspeed * modifier;
