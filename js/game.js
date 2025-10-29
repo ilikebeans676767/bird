@@ -1,113 +1,52 @@
 var canvas = document.createElement("canvas");
 var ctx = canvas.getContext("2d");
-canvas.width = 576; // 144 * 4
+canvas.width = 576;
 canvas.height = 256;
 document.body.appendChild(canvas);
-//bg image
+
+// Images
 var bgReady = false;
 var bgImage = new Image();
-bgImage.onload = function () {
-	bgReady = true;
-};
+bgImage.onload = function () { bgReady = true; };
 bgImage.src = "images/background.png";
-//bird image
+
 var birdReady = false;
 var birdImage = new Image();
-birdImage.onload = function()
-{
-	birdReady=true;
-}
-birdImage.src="images/bird.png";
-//first upper bar
-var upper1Ready=false;
-var upper1Image = new Image();
-upper1Image.onload = function() {
-	upper1Ready=true;
-}
-upper1Image.src="images/upper.png";
+birdImage.onload = function () { birdReady = true; };
+birdImage.src = "images/bird.png";
 
-//second upper bar
-var upper2Ready=false;
-var upper2Image = new Image();
-upper2Image.onload = function() {
-	upper2Ready=true;
-}
-upper2Image.src="images/upper.png";
+var upperPipeReady = false;
+var upperPipeImage = new Image();
+upperPipeImage.onload = function () { upperPipeReady = true; };
+upperPipeImage.src = "images/upper.png";
 
-//third upper bar
-var upper3Ready=false;
-var upper3Image = new Image();
-upper3Image.onload = function() {
-	upper3Ready=true;
-}
-upper3Image.src="images/upper.png";
+var lowerPipeReady = false;
+var lowerPipeImage = new Image();
+lowerPipeImage.onload = function () { lowerPipeReady = true; };
+lowerPipeImage.src = "images/lower.png";
 
-//first lower bar
-var lower1Ready=false;
-var lower1Image = new Image();
-lower1Image.onload = function() {
-	lower1Ready=true;
-}
-lower1Image.src="images/lower.png";
-
-//second lower bar
-var lower2Ready=false;
-var lower2Image = new Image();
-lower2Image.onload = function() {
-	lower2Ready=true;
-}
-lower2Image.src="images/lower.png";
-
-//third lower bar
-var lower3Ready=false;
-var lower3Image = new Image();
-lower3Image.onload = function() {
-	lower3Ready=true;
-}
-lower3Image.src="images/lower.png";
-
+// Bird
 var bird = {
-	xspeed : 0,
-	yspeed : 0,
-	xacc : 0,
-	yacc : 200,
-	x : 2,
-	y : 2,
-	score : 0
+	xspeed: 0,
+	yspeed: 0,
+	xacc: 0,
+	yacc: 200,
+	x: 2,
+	y: 2,
+	score: 0
 };
-// restore original pipe arrangement
-var upper1 = {
-	xspeed : -60,
-	x : 80,
-	y : -100
-}
-var upper2 = {
-	xspeed : -60,
-	x : 250,
-	y : -50
-}
-var upper3 = {
-	xspeed : -60,
-	x : 420,
-	y : -70
-}
 
-var lower1 = {
-	xspeed : -60,
-	x : 80,
-	y : 150
-}
-var lower2 = {
-	xspeed : -60,
-	x : 250,
-	y : 135
-}
-var lower3 = {
-	xspeed : -60,
-	x : 420,
-	y : 160
-}
-var keysDown = {};
+var PIPE_COUNT = 6; // Start with 6 pipes for higher difficulty
+var PIPE_GAP = 90;
+var PIPE_WIDTH = 25, PIPE_HEIGHT = 135; // Original pipe dimensions
+var PIPE_SPAWN_DISTANCE = Math.floor(canvas.width / PIPE_COUNT);
+var INITIAL_PIPE_SPEED = -30;
+var pipeSpeed = INITIAL_PIPE_SPEED;
+var pipesPassed = 0;
+
+// Arrays for upper and lower pipes
+var uppers = [];
+var lowers = [];
 
 // Game Over state
 var gameOver = false;
@@ -118,8 +57,38 @@ var tryAgainButton = {
 	y: canvas.height / 2 + 20
 };
 
-// add event listener for Try Again button
-canvas.addEventListener("click", function(evt) {
+// Helper for random Y positions
+function randomUpperY() {
+	return -40 - Math.random() * 70;
+}
+
+function initPipes() {
+	uppers = [];
+	lowers = [];
+	// Spread pipes evenly across the canvas
+	for (let i = 0; i < PIPE_COUNT; i++) {
+		let xPos = 80 + i * PIPE_SPAWN_DISTANCE;
+		let upperY = randomUpperY();
+		let lowerY = upperY + PIPE_GAP + PIPE_HEIGHT;
+		uppers.push({ xspeed: pipeSpeed, x: xPos, y: upperY, counted: false });
+		lowers.push({ xspeed: pipeSpeed, x: xPos, y: lowerY });
+	}
+}
+
+initPipes();
+
+var keysDown = {};
+addEventListener("keydown", function (e) {
+	keysDown[e.keyCode] = true;
+}, false);
+
+addEventListener("keyup", function (e) {
+	delete keysDown[e.keyCode];
+	f = 0;
+}, false);
+
+// Listen for mouse clicks for "Try Again" button
+canvas.addEventListener("click", function (evt) {
 	if (gameOver) {
 		var rect = canvas.getBoundingClientRect();
 		var mx = evt.clientX - rect.left;
@@ -138,33 +107,20 @@ canvas.addEventListener("click", function(evt) {
 	}
 }, false);
 
-//adding key listeners
-addEventListener("keydown", function (e) {
-	keysDown[e.keyCode] = true;
-}, false);
-
-addEventListener("keyup", function (e) {
-	delete keysDown[e.keyCode];
-	f=0;
-}, false);
-
 //function to reset game
 var reset = function () {
-	bird.xspeed=0;
-	bird.yspeed=0;
-	bird.x=0;
-	bird.y=120;
-	bird.score=0;
-	// restore original pipe arrangement
-	upper1.x = 80; upper1.y = -100;
-	upper2.x = 250; upper2.y = -50;
-	upper3.x = 420; upper3.y = -70;
-	lower1.x = 80; lower1.y = 150;
-	lower2.x = 250; lower2.y = 135;
-	lower3.x = 420; lower3.y = 160;
+	bird.xspeed = 0;
+	bird.yspeed = 0;
+	bird.x = 0;
+	bird.y = 120;
+	bird.score = 0;
+	pipeSpeed = INITIAL_PIPE_SPEED;
+	pipesPassed = 0;
+	initPipes();
 };
-var f=0;
-var difficulty=-40;
+
+var f = 0;
+var difficulty = -40;
 
 // collision helper: axis-aligned bounding box
 function rectsCollide(rx, ry, rw, rh, sx, sy, sw, sh) {
@@ -181,79 +137,55 @@ var update = function (modifier)
 {
 	if (gameOver) return;
 
-	bird.score+=modifier;
-	if (38 in keysDown && f==0) 
-	{ // Player holding up
+	bird.score += modifier;
+	if (38 in keysDown && f == 0) { // Player holding up
 		bird.yspeed = -70; // less big jump
-		f=1;
+		f = 1;
 	}
-	bird.x+=bird.xspeed * modifier;
-	bird.y+=bird.yspeed * modifier;
-	bird.xspeed+=bird.xacc * modifier;
-	bird.yspeed+=bird.yacc * modifier;
-	upper1.x=upper1.x + upper1.xspeed * modifier;
-	upper2.x=upper2.x + upper2.xspeed * modifier;
-	upper3.x=upper3.x + upper3.xspeed * modifier;
-	lower1.x=lower1.x + lower1.xspeed * modifier;
-	lower2.x=lower2.x + lower2.xspeed * modifier;
-	lower3.x=lower3.x + lower3.xspeed * modifier;
-	if (upper1.x<-25)
-	{
-		upper1.y=difficulty+10-Math.random()*50;
-		upper1.x=canvas.width;
+	bird.x += bird.xspeed * modifier;
+	bird.y += bird.yspeed * modifier;
+	bird.xspeed += bird.xacc * modifier;
+	bird.yspeed += bird.yacc * modifier;
+
+	for (let i = 0; i < PIPE_COUNT; i++) {
+		uppers[i].x += pipeSpeed * modifier;
+		lowers[i].x += pipeSpeed * modifier;
+		// Respawn pipes that move off the left of the screen
+		if (uppers[i].x < -PIPE_WIDTH) {
+			uppers[i].y = randomUpperY();
+			uppers[i].x = canvas.width;
+			uppers[i].counted = false;
+			lowers[i].y = uppers[i].y + PIPE_GAP + PIPE_HEIGHT;
+			lowers[i].x = canvas.width;
+		}
+
+		// Only count once per pipe set, when it passes the bird
+		if (!uppers[i].counted && uppers[i].x + PIPE_WIDTH < bird.x) {
+			pipesPassed++;
+			uppers[i].counted = true;
+			// Every 6 pipes passed, increase speed
+			if (pipesPassed % 6 === 0) {
+				pipeSpeed -= 5; // Increase speed by 5 (more negative is faster)
+			}
+		}
 	}
-	if (upper2.x<-25)
-	{
-		upper2.x=canvas.width;
-		upper2.y=difficulty+10-Math.random()*50;
-	}
-	if (upper3.x<-25)
-	{
-		upper3.x=canvas.width;
-		upper3.y=difficulty+10-Math.random()*50;	
-	}	
-	if (lower1.x<-25)
-	{
-		lower1.y=-difficulty+160-Math.random()*50;
-		lower1.x=canvas.width;
-	}
-	if (lower2.x<-25)
-	{
-		lower2.x=canvas.width;
-		lower2.y=-difficulty+160-Math.random()*50;
-	}
-	if (lower3.x<-25)
-	{
-		lower3.x=canvas.width;
-		lower3.y=-difficulty+160-Math.random()*50;	
-	}	
 
 	// Improved collision detection using bounding boxes (bird: 16x16 for your sprite, pipes: 25x135 as before)
-	const bw = 16, bh = 16, pw = 25, ph = 135;
-	const pipes = [
-		{ x: upper1.x, y: upper1.y },
-		{ x: upper2.x, y: upper2.y },
-		{ x: upper3.x, y: upper3.y },
-		{ x: lower1.x, y: lower1.y },
-		{ x: lower2.x, y: lower2.y },
-		{ x: lower3.x, y: lower3.y }
-	];
-	for (let i=0; i<3; ++i) {
+	const bw = 16, bh = 16, pw = PIPE_WIDTH, ph = PIPE_HEIGHT;
+	for (let i = 0; i < PIPE_COUNT; ++i) {
 		// Upper pipes
-		if (rectsCollide(bird.x, bird.y, bw, bh, pipes[i].x, pipes[i].y, pw, ph)) {
+		if (rectsCollide(bird.x, bird.y, bw, bh, uppers[i].x, uppers[i].y, pw, ph)) {
 			endGame();
 			return;
 		}
-	}
-	for (let i=3; i<6; ++i) {
 		// Lower pipes
-		if (rectsCollide(bird.x, bird.y, bw, bh, pipes[i].x, pipes[i].y, pw, ph)) {
+		if (rectsCollide(bird.x, bird.y, bw, bh, lowers[i].x, lowers[i].y, pw, ph)) {
 			endGame();
 			return;
 		}
 	}
 	// ground and ceiling
-	if (bird.y > canvas.height-bh || bird.y < 0) {
+	if (bird.y > canvas.height - bh || bird.y < 0) {
 		endGame();
 		return;
 	}
@@ -272,33 +204,16 @@ var render = function () {
 	} else {
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 	}
-	if (birdReady)
-	{
-		ctx.drawImage(birdImage,bird.x,bird.y);
+	if (birdReady) {
+		ctx.drawImage(birdImage, bird.x, bird.y);
 	}
-	if (upper1Ready)
-	{
-		ctx.drawImage(upper1Image,upper1.x,upper1.y);
-	}
-	if (upper2Ready)
-	{
-		ctx.drawImage(upper2Image,upper2.x,upper2.y);
-	}
-	if (upper3Ready)
-	{
-		ctx.drawImage(upper3Image,upper3.x,upper3.y);
-	}
-	if (lower1Ready)
-	{
-		ctx.drawImage(lower1Image,lower1.x,lower1.y);
-	}
-	if (lower2Ready)
-	{
-		ctx.drawImage(lower2Image,lower2.x,lower2.y);
-	}
-	if (lower3Ready)
-	{
-		ctx.drawImage(lower3Image,lower3.x,lower3.y);
+	for (let i = 0; i < PIPE_COUNT; i++) {
+		if (upperPipeReady) {
+			ctx.drawImage(upperPipeImage, uppers[i].x, uppers[i].y);
+		}
+		if (lowerPipeReady) {
+			ctx.drawImage(lowerPipeImage, lowers[i].x, lowers[i].y);
+		}
 	}
 	// Score
 	ctx.fillStyle = "rgb(250, 250, 250)";
