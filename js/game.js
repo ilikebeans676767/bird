@@ -114,7 +114,7 @@ var reset = function () {
 	bird.x = 0;
 	bird.y = 120;
 	bird.score = 0;
-	pipeSpeed = INITIAL_PIPE_SPEED;
+	pipeSpeed = ;
 	pipesPassed = 0;
 	initPipes();
 };
@@ -165,7 +165,7 @@ var update = function (modifier)
 			uppers[i].counted = true;
 			// Every 6 pipes passed, increase speed
 			if (pipesPassed % 4 === 0) {
-				pipeSpeed -= 60; // Increase speed by 5 (more negative is faster)
+				pipeSpeed = -60; // Increase speed by 5 (more negative is faster)
 			}
 		}
 	}
