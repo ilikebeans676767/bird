@@ -1,6 +1,6 @@
 var canvas = document.createElement("canvas");
 var ctx = canvas.getContext("2d");
-canvas.width = 144;
+canvas.width = 576; // 144 * 4
 canvas.height = 256;
 document.body.appendChild(canvas);
 //bg image
@@ -76,35 +76,36 @@ x : 2,
 y : 2,
 score : 0
 };
+// Spread out the pipes more since the screen is wider
 var upper1 = {
 	xspeed : -30,
-	x : 20,
+	x : 80,
 	y : -100
 }
 var upper2 = {
 	xspeed : -30,
-	x : 75,
+	x : 250,
 	y : -50
 }
 var upper3 = {
 	xspeed : -30,
-	x : 130,
+	x : 420,
 	y : -70
 }
 
 var lower1 = {
 	xspeed : -30,
-	x : 20,
+	x : 80,
 	y : 150
 }
 var lower2 = {
 	xspeed : -30,
-	x : 75,
+	x : 250,
 	y : 135
 }
 var lower3 = {
 	xspeed : -30,
-	x : 130,
+	x : 420,
 	y : 160
 }
 var keysDown = {};
@@ -150,31 +151,31 @@ var update = function (modifier)
 	if (upper1.x<-25)
 	{
 		upper1.y=difficulty+10-Math.random()*50;
-		upper1.x=144
+		upper1.x=576; // was 144
 	}
 	if (upper2.x<-25)
 	{
-		upper2.x=144
+		upper2.x=576; // was 144
 		upper2.y=difficulty+10-Math.random()*50;
 	}
 	if (upper3.x<-25)
 	{
-		upper3.x=144
+		upper3.x=576; // was 144
 		upper3.y=difficulty+10-Math.random()*50;	
 	}	
 	if (lower1.x<-25)
 	{
 		lower1.y=-difficulty+160-Math.random()*50;
-		lower1.x=144
+		lower1.x=576; // was 144
 	}
 	if (lower2.x<-25)
 	{
-		lower2.x=144
+		lower2.x=576; // was 144
 		lower2.y=-difficulty+160-Math.random()*50;
 	}
 	if (lower3.x<-25)
 	{
-		lower3.x=144
+		lower3.x=576; // was 144
 		lower3.y=-difficulty+160-Math.random()*50;	
 	}	
 	//collision detection
