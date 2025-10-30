@@ -37,7 +37,7 @@ var bird = {
 };
 
 var PIPE_COUNT = 6; // More for better dificulty
-var PIPE_GAP = 60;
+var PIPE_GAP = 75;
 var PIPE_WIDTH = 25, PIPE_HEIGHT = 135; // Original pipe dimensions
 var PIPE_SPAWN_DISTANCE = Math.floor(canvas.width / PIPE_COUNT);
 var INITIAL_PIPE_SPEED = -105; // Speed
@@ -71,7 +71,7 @@ function initPipes() {
 		let upperY = randomUpperY();
 		let lowerY = upperY + PIPE_GAP + PIPE_HEIGHT;
 		uppers.push({ xspeed: pipeSpeed, x: xPos, y: upperY, counted: false });
-		lowers.push({ xspeed: pipeSpeed, x: xPos, y: lowerY });
+		lowers.push({ xspeed: pipeSpeed, x: xPos-3.5, y: lowerY });
 	}
 }
 
