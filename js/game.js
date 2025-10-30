@@ -71,7 +71,7 @@ function initPipes() {
 		let upperY = randomUpperY();
 		let lowerY = upperY + PIPE_GAP + PIPE_HEIGHT;
 		uppers.push({ xspeed: pipeSpeed, x: xPos, y: upperY, counted: false });
-		lowers.push({ xspeed: pipeSpeed, x: xPos-4.5, y: lowerY });
+		lowers.push({ xspeed: pipeSpeed, x: xPos-8.5, y: lowerY });
 	}
 }
 
@@ -179,7 +179,7 @@ var update = function (modifier)
 			return;
 		}
 		// Lower pipes
-		if (rectsCollide(bird.x, bird.y, bw, bh, lowers[i].x-3.5, lowers[i].y, pw, ph)) {
+		if (rectsCollide(bird.x, bird.y, bw, bh, lowers[i].x+3.5, lowers[i].y, pw, ph)) {
 			endGame();
 			return;
 		}
