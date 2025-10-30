@@ -71,7 +71,7 @@ function initPipes() {
 		let upperY = randomUpperY();
 		let lowerY = upperY + PIPE_GAP + PIPE_HEIGHT;
 		uppers.push({ xspeed: pipeSpeed, x: xPos, y: upperY, counted: false });
-		lowers.push({ xspeed: pipeSpeed, x: xPos+7.5, y: lowerY });
+		lowers.push({ xspeed: pipeSpeed, x: xPos+13, y: lowerY });
 	}
 }
 
