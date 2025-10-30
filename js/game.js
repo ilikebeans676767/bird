@@ -179,7 +179,7 @@ var update = function (modifier)
 			return;
 		}
 		// Lower pipes
-		if (rectsCollide(bird.x, bird.y, bw, bh, lowers[i].x+3.5, lowers[i].y, pw, ph)) {
+		if (rectsCollide(bird.x, bird.y, bw, bh, lowers[i].x+3, lowers[i].y, pw, ph)) {
 			endGame();
 			return;
 		}
