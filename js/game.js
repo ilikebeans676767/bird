@@ -71,7 +71,7 @@ function initPipes() {
 		let upperY = randomUpperY();
 		let lowerY = upperY + PIPE_GAP + PIPE_HEIGHT;
 		uppers.push({ xspeed: pipeSpeed, x: xPos, y: upperY, counted: false });
-		lowers.push({ xspeed: pipeSpeed, x: xPos-8.5, y: lowerY });
+		lowers.push({ xspeed: pipeSpeed, x: xPos-7.5, y: lowerY });
 	}
 }
 
@@ -212,7 +212,7 @@ var render = function () {
 			ctx.drawImage(upperPipeImage, uppers[i].x, uppers[i].y);
 		}
 		if (lowerPipeReady) {
-			ctx.drawImage(lowerPipeImage, lowers[i].x, lowers[i].y);
+			ctx.drawImage(lowerPipeImage, lowers[i].x-7.5, lowers[i].y);
 		}
 	}
 	// Score
